@@ -1,0 +1,26 @@
+# ملفات Dart/Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+doc/api/
+
+# مفاتيح وتوقيع أندرويد (لا تُرفع أبدًا)
+android/key.properties
+*.jks
+*.keystore
+local.properties
+
+# أدوات التحرير
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# ملفات التوليد المؤقتة
+*.log
+*.g.dart
+*.freezed.dart

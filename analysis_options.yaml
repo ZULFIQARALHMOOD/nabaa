@@ -1,0 +1,18 @@
+# قواعد التحليل الثابت لمشروع «نبع»
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+
+linter:
+  rules:
+    # أسلوب الكود: اقتباس مفرد، ترتيب الحقول، صراحة الأنواع
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    use_super_parameters: true
+    # لا نطبع إلى stdout داخل التطبيق (نستخدم debugPrint عند الحاجة)
+    avoid_print: true
+    # لا نُهمل المستقبِلات (futures) بصمت
+    unawaited_futures: true

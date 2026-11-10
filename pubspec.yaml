@@ -1,0 +1,45 @@
+name: nabaa
+description: "نبع — محرر نصوص عربي سريع ونظيف، مبني بـ Flutter ومستوحى من فكرة WordCraft."
+publish_to: "none"
+
+# إصدار التطبيق: 0.1.0 للعرض، و1 رقم البناء الذي يرفعه GitHub Actions.
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
+
+dependencies:
+  # أساسيات Flutter
+  flutter:
+    sdk: flutter
+
+  # تعريب الواجهة واتجاه RTL (Material/Widgets/Cupertino)
+  flutter_localizations:
+    sdk: flutter
+
+  # محرر النصوص الغني: التنسيقات، الألوان، الصور، التراجع، الحافظة
+  flutter_quill: ^11.6.0
+
+  # إضافات flutter_quill لعرض/إدراج الصور والفيديو داخل المستند
+  flutter_quill_extensions: ^11.0.0
+
+  # تصدير المستند بصيغة PDF والطباعة/المشاركة
+  pdf: ^3.13.1
+  printing: ^5.15.1
+
+  # حفظ الملفات في ذاكرة الجهاز (مجلدات التطبيق الخاصة)
+  path_provider: ^2.1.6
+
+  # اختيار صورة من معرض الجهاز لزر «إضافة صورة»
+  image_picker: ^1.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # قواعد التحليل الثابت الرسمية لـ Flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

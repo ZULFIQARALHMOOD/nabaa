@@ -7,6 +7,10 @@
 build/
 coverage/
 doc/api/
+dist/
+
+# ملفات منصة أندرويد المولّدة (ينشئها tool/prepare_android.sh في CI)
+/android/
 
 # مفاتيح وتوقيع أندرويد (لا تُرفع أبدًا)
 android/key.properties

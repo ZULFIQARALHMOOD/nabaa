@@ -1,0 +1,91 @@
+# بناء تطبيق «نبع» (APK) تلقائيًا على GitHub Actions.
+#
+# ماذا يفعل؟
+#   1) يجهّز ملفات منصة أندرويد عبر tool/prepare_android.sh (قالب Flutter الرسمي)
+#   2) يضبط applicationId = com.nabaa.editor والاسم «نبع»
+#   3) يبني APK بالإصدار release ويرفعه كأثر (Artifact) قابل للتنزيل
+#   4) عند دفع وسم يبدأ بـ v (مثل v0.1.0) ينشر الملف في GitHub Releases
+#
+# التشغيل: push إلى main أو تشغيل يدوي من تبويب Actions.
+name: بناء APK
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: بناء نبع (Android)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: جلب الكود
+        uses: actions/checkout@v4
+
+      - name: تجهيز Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # نسخة Flutter مثبّتة لإعادة بناء قابلة للتكرار.
+      # إن ظهرت نسخة أحدث في https://docs.flutter.dev/release/archive
+      # يمكن تحديث الرقم هنا، أو استبداله بـ channel: stable.
+      - name: تجهيز Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.9"
+          channel: stable
+          cache: true
+
+      - name: عرض معلومات Flutter
+        run: flutter --version
+
+      - name: تجهيز ملفات منصة أندرويد
+        run: bash tool/prepare_android.sh
+
+      - name: جلب حزم Dart/Flutter
+        run: flutter pub get
+
+      # التحليل الثابت مفيد لكنه لا يوقف بناء APK: نريد دائماً ملفاً قابلاً للتثبيت.
+      - name: التحليل الثابت (اختياري)
+        continue-on-error: true
+        run: flutter analyze
+
+      - name: بناء APK (release)
+        run: |
+          flutter build apk --release \
+            --build-number=${{ github.run_number }} \
+            --build-name=0.1.0
+
+      - name: تجهيز ملف التوزيع
+        run: |
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "dist/nabaa-${GITHUB_RUN_NUMBER}.apk"
+          ls -lh dist
+
+      - name: رفع APK كأثر قابل للتنزيل
+        uses: actions/upload-artifact@v4
+        with:
+          name: nabaa-apk-${{ github.run_number }}
+          path: dist/*.apk
+          retention-days: 30
+
+      - name: نشر إصدار عند دفع وسم
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.apk
+          generate_release_notes: true
